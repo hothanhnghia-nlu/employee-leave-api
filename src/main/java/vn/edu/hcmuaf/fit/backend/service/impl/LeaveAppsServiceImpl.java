@@ -12,13 +12,14 @@ import vn.edu.hcmuaf.fit.backend.service.LeaveAppsService;
 
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class LeaveAppsServiceImpl implements LeaveAppsService {
+    @Autowired
     private LeaveAppsRepository leaveAppsRepository;
-    private  EmployeeRepository employeeRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private EmployeeServiceImpl employeeService;
@@ -33,8 +34,7 @@ public class LeaveAppsServiceImpl implements LeaveAppsService {
     public LeaveApplications saveLeaveApps(int employeeId, LeaveApplicationsDTO leaveAppsDTO) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
                 new ResourceNotFoundException("Employee", "Id", leaveAppsDTO.getId()));
-        System.out.println(employeeId);
-//        System.out.println(employee.getBossId());
+
         LeaveApplications leaveApplications = new LeaveApplications();
         leaveApplications.setId(leaveAppsDTO.getId());
         leaveApplications.setEmployee(employee);
@@ -93,6 +93,15 @@ public class LeaveAppsServiceImpl implements LeaveAppsService {
         existingLeaveApp.setUpdatedAt(LocalDateTime.now());
 
         return leaveAppsRepository.save(existingLeaveApp);
+    }
+
+    @Override
+    public void deleteLeaveAppsByID(int id) {
+        leaveAppsRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Leave Application", "Id", id));
+
+        leaveAppsRepository.deleteById(id);
+
     }
 
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.hcmuaf.fit.backend.Util.MailStructure;
 import vn.edu.hcmuaf.fit.backend.dto.LeaveApplicationsDTO;
 import vn.edu.hcmuaf.fit.backend.model.Employee;
 import vn.edu.hcmuaf.fit.backend.model.LeaveApplications;
@@ -12,14 +13,13 @@ import vn.edu.hcmuaf.fit.backend.service.LeaveAppsService;
 
 import java.util.List;
 
-import static vn.edu.hcmuaf.fit.backend.Util.Email.sendMail;
+import static vn.edu.hcmuaf.fit.backend.service.MailService.sendMail;
 
 @RestController
 @RequestMapping("api/leave-applications")
 public class LeaveAppsController {
     @Autowired
     private EmployeeService employeeService;
-
     @Autowired
     private LeaveAppsService leaveAppsService;
 
@@ -34,7 +34,11 @@ public class LeaveAppsController {
         Employee employee = employeeService.getEmployeeByID(employeeId);
         Employee boss = employeeService.getEmployeeByID(employee.getBossId().getId());
 
-        sendMail(boss.getEmail(), "Bạn có một số đơn xin nghỉ phép cần xử lý", "Thông báo xử lý đơn xin nghỉ phép");
+        MailStructure mailStructure = new MailStructure();
+        mailStructure.setSubject("Thông báo xử lý đơn xin nghỉ phép");
+        mailStructure.setContent("Bạn có một số đơn xin nghỉ phép cần xử lý");
+
+        sendMail(boss.getEmail(), mailStructure);
 
         return new ResponseEntity<>(leaveAppsService.saveLeaveApps(employeeId, leaveApps), HttpStatus.CREATED);
     }
@@ -50,9 +54,10 @@ public class LeaveAppsController {
                                                               @RequestBody LeaveApplicationsDTO leaveAppsDTO) {
         LeaveApplications leaveApplications = leaveAppsService.getLeaveAppsByID(id);
         Employee sender = employeeService.getEmployeeByID(leaveApplications.getEmployee().getId());
-        Employee reciver = employeeService.getEmployeeByID(leaveApplications.getHandleBy().getId());
+        Employee receiver = employeeService.getEmployeeByID(leaveApplications.getHandleBy().getId());
         String status = "";
         String reason = "";
+
         switch (leaveAppsDTO.getStatus()) {
             case 0:
                 status = "Không chấp nhận";
@@ -67,7 +72,13 @@ public class LeaveAppsController {
         if (leaveAppsDTO.getReasonReject().isEmpty()) {
             reason = "Không có.";
         }
-        sendMail(sender.getEmail(), getContentMail(id + "", sender.getFullName(), reciver.getFullName(), status, reason), "Thông báo xử lý đơn xin nghỉ phép");
+
+        MailStructure mailStructure = new MailStructure();
+        mailStructure.setSubject("Thông báo xử lý đơn xin nghỉ phép");
+        mailStructure.setContent(getContentMail(id + "",
+                sender.getFullName(), receiver.getFullName(), status, reason));
+
+        sendMail(sender.getEmail(), mailStructure);
         return new ResponseEntity<>(leaveAppsService.approveLeaveAppsByID(id, leaveAppsDTO), HttpStatus.OK);
     }
 
@@ -81,6 +92,12 @@ public class LeaveAppsController {
         return leaveAppsService.getLeaveAppsByHandleById(handleBy);
     }
 
+    // Delete Leave Application by id
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteLeaveAppsById(@PathVariable ("id") int id) {
+        leaveAppsService.deleteLeaveAppsByID(id);
+        return new ResponseEntity<>("Leave apps " + id + " is deleted successfully!", HttpStatus.OK);
+    }
 
     public String getContentMail(String leaveID, String sender, String reciver, String status, String reason) {
         String content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
