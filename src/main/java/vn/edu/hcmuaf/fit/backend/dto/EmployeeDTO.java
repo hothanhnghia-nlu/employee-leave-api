@@ -13,12 +13,15 @@ public class EmployeeDTO {
     private String password;
     private String email;
     private String fullName;
-    private int bossId;
+    private BossDTO boss;
     private String position;
     private int dayOffRemaining;
     private LocalDateTime firstDayOfWork;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public EmployeeDTO() {
+    }
 
     public String getFormattedId() {
         return String.format("%06d", this.userId);

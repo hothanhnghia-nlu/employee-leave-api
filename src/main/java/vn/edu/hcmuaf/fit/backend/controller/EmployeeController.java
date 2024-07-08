@@ -1,8 +1,10 @@
 package vn.edu.hcmuaf.fit.backend.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.hcmuaf.fit.backend.dto.EmployeeDTO;
 import vn.edu.hcmuaf.fit.backend.model.Employee;
 import vn.edu.hcmuaf.fit.backend.service.EmployeeService;
 
@@ -11,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/employees")
 public class EmployeeController {
+    @Autowired
     private EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
@@ -25,7 +28,7 @@ public class EmployeeController {
 
     // Get all Employee
     @GetMapping
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeDTO> getAllEmployees() {
         return employeeService.getAllEmployee();
     }
 
@@ -38,11 +41,11 @@ public class EmployeeController {
     // Update Employee by id
     @PutMapping("{id}")
     public ResponseEntity<Employee> updateEmployeeById(@PathVariable ("id") int id,
-                                                   @RequestBody Employee employee) {
-        return new ResponseEntity<>(employeeService.updateEmployeeByID(employee, id), HttpStatus.OK);
+                                                   @RequestBody EmployeeDTO employeeDTO) {
+        return new ResponseEntity<>(employeeService.updateEmployeeByID(id, employeeDTO), HttpStatus.OK);
     }
 
-    // Update Employee by id
+    // Delete Employee by id
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteEmployeeById(@PathVariable ("id") int id) {
         employeeService.deleteEmployeeByID(id);
