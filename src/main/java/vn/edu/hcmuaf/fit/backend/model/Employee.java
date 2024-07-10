@@ -54,6 +54,9 @@ public class Employee {
     @JsonIgnore
     private List<LeaveApplications> applicationsList;
 
+    @OneToOne(mappedBy = "employee")
+    private ForgotPassword forgotPassword;
+
     public Employee(int id) {
         this.id = id;
     }
