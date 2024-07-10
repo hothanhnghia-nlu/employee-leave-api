@@ -48,6 +48,21 @@ INSERT INTO `employees` VALUES (3, 'mai', '12378945', 'Nguyễn Thị Trúc Mai'
 INSERT INTO `employees` VALUES (4, 'hieu', '11224455', 'Trần Trung Hiếu', '20130170@st.hcmuaf.edu.vn', 'Dev', 10, '2024-03-24 09:00:00', 1, '2024-07-05 03:21:08', NULL);
 
 -- ----------------------------
+-- Table structure for forgot_password
+-- ----------------------------
+    
+DROP TABLE IF EXISTS `forgot_password`;
+CREATE TABLE `forgot_password`  (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `otp` int NOT NULL,
+    `expiration_time` datetime(6) NOT NULL,
+    `employee_id` int NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `UK_qmvua3m4633ur9bosd8ga82n7`(`employee_id` ASC) USING BTREE,
+    CONSTRAINT `FK4tglef0qrhw0cg5uepmwsmwd4` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for leave_application
 -- ----------------------------
 DROP TABLE IF EXISTS `leave_application`;

@@ -8,4 +8,5 @@ import vn.edu.hcmuaf.fit.backend.model.Employee;
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     Employee findByUsernameAndPassword(String username, String password);
+    Employee findByEmail(String email);
 }

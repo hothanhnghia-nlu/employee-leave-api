@@ -10,6 +10,7 @@ public interface EmployeeService {
     List<EmployeeDTO> getAllEmployee();
     Employee getEmployeeByID(int id);
     Employee updateEmployeeByID(int id, EmployeeDTO employeeDTO);
+    Employee updatePassword(String email, EmployeeDTO employeeDTO);
     void deleteEmployeeByID(int id);
     String login(String username, String pass);
 }

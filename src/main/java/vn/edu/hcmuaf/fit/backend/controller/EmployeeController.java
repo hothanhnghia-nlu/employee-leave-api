@@ -45,6 +45,14 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.updateEmployeeByID(id, employeeDTO), HttpStatus.OK);
     }
 
+    // Change password
+    @PutMapping("/change-password/{email}")
+    public ResponseEntity<String> changePassword(@PathVariable ("email") String email,
+                                                   @RequestBody EmployeeDTO employeeDTO) {
+        employeeService.updatePassword(email, employeeDTO);
+        return new ResponseEntity<>("Employee email: " + email + " is changed password successfully", HttpStatus.OK);
+    }
+
     // Delete Employee by id
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteEmployeeById(@PathVariable ("id") int id) {

@@ -78,7 +78,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         existingEmployee.setUpdatedAt(LocalDateTime.now());
 
         return employeeRepository.save(existingEmployee);
+    }
 
+    @Override
+    public Employee updatePassword(String email, EmployeeDTO employeeDTO) {
+        Employee existingEmployee = employeeRepository.findByEmail(email);
+
+        existingEmployee.setPassword(employeeDTO.getPassword());
+        existingEmployee.setUpdatedAt(LocalDateTime.now());
+
+        return employeeRepository.save(existingEmployee);
     }
 
     @Override
