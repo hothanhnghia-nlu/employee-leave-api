@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.edu.hcmuaf.fit.backend.Util.MailStructure;
+import vn.edu.hcmuaf.fit.backend.util.MailStructure;
 import vn.edu.hcmuaf.fit.backend.dto.LeaveApplicationsDTO;
 import vn.edu.hcmuaf.fit.backend.model.Employee;
 import vn.edu.hcmuaf.fit.backend.model.LeaveApplications;

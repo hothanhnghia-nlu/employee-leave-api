@@ -1,4 +1,4 @@
-package vn.edu.hcmuaf.fit.backend.Util;
+package vn.edu.hcmuaf.fit.backend.util;
 
 import lombok.Getter;
 import lombok.Setter;
