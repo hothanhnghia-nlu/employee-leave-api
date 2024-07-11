@@ -1,17 +1,16 @@
 package vn.edu.hcmuaf.fit.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 @Table(name = "forgot_password")
 public class ForgotPassword {
@@ -22,7 +21,10 @@ public class ForgotPassword {
     @Column(nullable = false)
     private int otp;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }
