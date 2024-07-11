@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface ForgotPasswordRepository extends JpaRepository<ForgotPassword, Integer> {
     @Query("select fp from ForgotPassword fp where fp.otp = ?1 and fp.employee = ?2")
     Optional<ForgotPassword> findByOtpAndEmployee(int otp, Employee employee);
+
+    ForgotPassword findByEmployee(Employee employee);
 }

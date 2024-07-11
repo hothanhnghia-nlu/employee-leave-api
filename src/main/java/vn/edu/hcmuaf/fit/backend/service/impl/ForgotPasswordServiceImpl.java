@@ -1,6 +1,7 @@
 package vn.edu.hcmuaf.fit.backend.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import vn.edu.hcmuaf.fit.backend.util.MailStructure;
 import vn.edu.hcmuaf.fit.backend.model.Employee;
@@ -11,6 +12,7 @@ import vn.edu.hcmuaf.fit.backend.service.ForgotPasswordService;
 import vn.edu.hcmuaf.fit.backend.service.MailService;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Random;
 
@@ -33,17 +35,23 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         int otp = otpGenerator();
         MailStructure mailStructure = new MailStructure();
         mailStructure.setSubject("Đặt lại mật khẩu");
-        mailStructure.setContent("<html><body>Xin chào bạn,<br/>" +"\n" +
+        mailStructure.setContent("<html><body>Xin chào bạn,<br/>" + "\n" +
                 "Vui lòng nhập mã OTP này để đặt lại mật khẩu:" + "\n" +
                 "<span style='font-size: 18px;'><b>" + otp + "</b></span></body></html>");
 
         ForgotPassword fp = ForgotPassword.builder()
                 .otp(otp)
                 .employee(employee)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         MailService.sendMail(email, mailStructure);
-        forgotPasswordRepository.save(fp);
+
+        try {
+            forgotPasswordRepository.save(fp);
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
