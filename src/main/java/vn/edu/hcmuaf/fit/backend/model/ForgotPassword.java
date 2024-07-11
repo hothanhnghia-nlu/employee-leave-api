@@ -22,9 +22,6 @@ public class ForgotPassword {
     @Column(nullable = false)
     private int otp;
 
-    @Column(nullable = false)
-    private Date expirationTime;
-
     @OneToOne
     private Employee employee;
 

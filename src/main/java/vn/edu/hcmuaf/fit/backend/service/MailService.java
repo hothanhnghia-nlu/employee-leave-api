@@ -1,6 +1,6 @@
 package vn.edu.hcmuaf.fit.backend.service;
 
-import vn.edu.hcmuaf.fit.backend.Util.MailStructure;
+import vn.edu.hcmuaf.fit.backend.util.MailStructure;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
