@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LeaveAppsService {
     LeaveApplications saveLeaveApps(int employeeId, LeaveApplicationsDTO leaveApps);
-    List<LeaveApplications> getAllLeaveApp();
+    List<LeaveApplicationsDTO> getAllLeaveApp();
     LeaveApplications getLeaveAppsByID(int id);
     List<LeaveApplications> getLeaveAppsByEmployeeId(int employeeId);
     List<LeaveApplications> getLeaveAppsByHandleById(int handleBy);

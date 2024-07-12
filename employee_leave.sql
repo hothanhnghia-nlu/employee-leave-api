@@ -91,4 +91,72 @@ CREATE TABLE `leave_application`  (
 -- Records of leave_application
 -- ----------------------------
 
+-- ----------------------------
+-- Procedure structure for update_day_off_remaining
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `update_day_off_remaining`;
+delimiter ;;
+CREATE PROCEDURE `update_day_off_remaining`()
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE _id INT;
+  DECLARE _first_day_of_work DATE;
+  DECLARE _day_off_remaining INT;
+  DECLARE months_worked INT;
+  DECLARE years_worked INT;
+  DECLARE new_day_off_remaining INT;
+  DECLARE cur CURSOR FOR SELECT id, first_day_of_work, day_off_remaining FROM employees;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+OPEN cur;
+
+read_loop: LOOP
+    FETCH cur INTO _id, _first_day_of_work, _day_off_remaining;
+    IF done THEN
+      LEAVE read_loop;
+END IF;
+
+    SET months_worked = MONTH(_first_day_of_work);
+    SET years_worked = YEAR(NOW()) - YEAR(_first_day_of_work);
+
+    IF years_worked = 0 THEN
+      -- Trong năm đầu tiên làm việc, số ngày nghỉ phép = 12 - số tháng đã làm việc + 1
+      SET new_day_off_remaining = 12 - months_worked + 1;
+    ELSEIF years_worked >= 1 THEN
+      SET new_day_off_remaining = 12;
+ELSE
+      SET new_day_off_remaining = months_worked + 1;
+END IF;
+
+    IF years_worked >= 5 THEN
+      SET new_day_off_remaining = new_day_off_remaining + 1;
+END IF;
+
+    -- Cộng dồn số ngày nghỉ phép còn lại từ năm trước
+    SET new_day_off_remaining = new_day_off_remaining + _day_off_remaining;
+
+UPDATE employees SET day_off_remaining = new_day_off_remaining WHERE id = _id;
+END LOOP;
+
+CLOSE cur;
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table employees
+-- ----------------------------
+DROP TRIGGER IF EXISTS `before_employee_insert`;
+delimiter ;;
+CREATE TRIGGER `before_employee_insert` BEFORE INSERT ON `employees` FOR EACH ROW BEGIN
+    DECLARE months_worked INT;
+
+    SET months_worked = MONTH(NEW.first_day_of_work);
+
+    -- Tính toán số ngày nghỉ phép mới
+    SET NEW.day_off_remaining = 12 - months_worked + 1;
+END
+;;
+delimiter ;
+
 SET FOREIGN_KEY_CHECKS = 1;

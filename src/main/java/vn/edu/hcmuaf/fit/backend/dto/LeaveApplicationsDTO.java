@@ -11,12 +11,14 @@ import java.time.LocalDateTime;
 public class LeaveApplicationsDTO {
     private int id;
     private int userId;
+    private EmployeeDTO employee;
     private String reason;
     private LocalDate from;
     private LocalDate to;
     private int status;
     private String reasonReject;
     private int receivedTo;
+    private BossDTO handleBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
