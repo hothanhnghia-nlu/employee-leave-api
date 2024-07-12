@@ -120,20 +120,21 @@ public class LeaveAppsServiceImpl implements LeaveAppsService {
 
         existingLeaveApp.setReasonReject(leaveApps.getReasonReject());
         existingLeaveApp.setStatus(leaveApps.getStatus());
-//        existingLeaveApp.setHandleBy();
+        existingLeaveApp.setUpdatedAt(LocalDateTime.now());
+
         LeaveApplications leaveApplications = getLeaveAppsByID(id);
         Employee employee = employeeService.getEmployeeByID(leaveApplications.getEmployee().getId());
-        if(leaveApps.getStatus()==1){
-            Period period = Period.between(leaveApplications.getFrom(),leaveApplications.getTo() );
+
+        if (leaveApps.getStatus() == 1) {
+            Period period = Period.between(leaveApplications.getFrom(), leaveApplications.getTo());
             int days = period.getDays();
-            if(days>employee.getDayOffRemaining()){
+            if (days > employee.getDayOffRemaining()) {
                 leaveApps.setStatus(0);
                 return leaveAppsRepository.save(existingLeaveApp);
             }
-            employee.setDayOffRemaining(employee.getDayOffRemaining()-days);
+            employee.setDayOffRemaining(employee.getDayOffRemaining() - days);
             employeeRepository.save(employee);
         }
-        existingLeaveApp.setUpdatedAt(LocalDateTime.now());
 
         return leaveAppsRepository.save(existingLeaveApp);
     }

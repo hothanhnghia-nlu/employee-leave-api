@@ -63,27 +63,29 @@ public class LeaveAppsController {
         Employee sender = employeeService.getEmployeeByID(leaveApplications.getEmployee().getId());
         Employee receiver = employeeService.getEmployeeByID(leaveApplications.getHandleBy().getId());
         String status = "";
-        String reason = "";
+        String reasonReject = "";
 
         switch (leaveAppsDTO.getStatus()) {
             case 0:
                 status = "Không chấp nhận";
+                reasonReject = leaveAppsDTO.getReasonReject();
                 break;
             case 1:
                 status = "Chấp nhận";
+                reasonReject = leaveAppsDTO.getReasonReject();
                 break;
             default:
                 status = "Đang chờ được xét duyệt";
                 break;
         }
         if (leaveAppsDTO.getReasonReject().isEmpty()) {
-            reason = "Không có.";
+            reasonReject = "Không có";
         }
 
         MailStructure mailStructure = new MailStructure();
-        mailStructure.setSubject("Thông báo xử lý đơn xin nghỉ phép");
-        mailStructure.setContent(getContentMail(id + "",
-                sender.getFullName(), receiver.getFullName(), status, reason));
+        mailStructure.setSubject("Thông báo Kết quả duyệt đơn xin nghỉ phép");
+        mailStructure.setContent(getContentMail(id + "", sender.getFullName(),
+                receiver.getFullName(), leaveApplications.getReason(), status, reasonReject));
 
         sendMail(sender.getEmail(), mailStructure);
         return new ResponseEntity<>(leaveAppsService.approveLeaveAppsByID(id, leaveAppsDTO), HttpStatus.OK);
@@ -106,7 +108,7 @@ public class LeaveAppsController {
         return new ResponseEntity<>("Leave apps " + id + " is deleted successfully!", HttpStatus.OK);
     }
 
-    public String getContentMail(String leaveID, String sender, String receiver, String status, String reason) {
+    public String getContentMail(String leaveID, String sender, String receiver, String reason, String status, String reasonReject) {
         String content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
                 "<html dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n" +
                 "\n" +
@@ -168,13 +170,14 @@ public class LeaveAppsController {
                 "                                                                                </tr>\n" +
                 "                                                                                <tr>\n" +
                 "                                                                                    <td align=\"left\" class=\"esd-block-text es-p5t es-p5b es-p40r es-p40l es-m-p0r es-m-p0l\">\n" +
-                "                                                                                        <p>Xin chào,</p>\n" +
+                "                                                                                        <p>Xin chào " + sender + ",</p>\n" +
                 "                                                                                        <p>Chúng tôi đã duyệt đơn xin nghỉ phép của bạn.</p>\n" +
                 "                                                                                        <p><br></p>\n" +
-                "                                                                                        <p>Mã đơn: " + leaveID + ":</p>\n" +
-                "                                                                                        <p>Tên người gửi: " + sender + "<br>Tên người duyệt: " + receiver + "</p>\n" +
+                "                                                                                        <p>Mã đơn: " + leaveID + "</p>\n" +
+                "                                                                                        <p>Lý do nghỉ: " + reason + "</p>\n" +
+                "                                                                                        <p>Tên người duyệt: " + receiver + "</p>\n" +
                 "                                                                                        <p>Trạng thái: <strong>" + status + "</strong></p>\n" +
-                "                                                                                        <p>Lý do: " + reason + "</p>\n" +
+                "                                                                                        <p>Lý do từ chối: " + reasonReject + "</p>\n" +
                 "                                                                                    </td>\n" +
                 "                                                                                </tr>\n" +
                 "                                                                            </tbody>\n" +
