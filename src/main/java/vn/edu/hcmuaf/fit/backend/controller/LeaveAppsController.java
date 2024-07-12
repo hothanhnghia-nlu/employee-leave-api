@@ -106,7 +106,7 @@ public class LeaveAppsController {
         return new ResponseEntity<>("Leave apps " + id + " is deleted successfully!", HttpStatus.OK);
     }
 
-    public String getContentMail(String leaveID, String sender, String reciver, String status, String reason) {
+    public String getContentMail(String leaveID, String sender, String receiver, String status, String reason) {
         String content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
                 "<html dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n" +
                 "\n" +
@@ -172,7 +172,7 @@ public class LeaveAppsController {
                 "                                                                                        <p>Chúng tôi đã duyệt đơn xin nghỉ phép của bạn.</p>\n" +
                 "                                                                                        <p><br></p>\n" +
                 "                                                                                        <p>Mã đơn: " + leaveID + ":</p>\n" +
-                "                                                                                        <p>Tên người gửi: " + sender + "<br>Tên người duyệt: " + reciver + "</p>\n" +
+                "                                                                                        <p>Tên người gửi: " + sender + "<br>Tên người duyệt: " + receiver + "</p>\n" +
                 "                                                                                        <p>Trạng thái: <strong>" + status + "</strong></p>\n" +
                 "                                                                                        <p>Lý do: " + reason + "</p>\n" +
                 "                                                                                    </td>\n" +
