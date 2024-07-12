@@ -1,6 +1,7 @@
 package vn.edu.hcmuaf.fit.backend.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.edu.hcmuaf.fit.backend.dto.BossDTO;
 import vn.edu.hcmuaf.fit.backend.dto.EmployeeDTO;
@@ -17,13 +18,17 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Employee saveEmployee(Employee employee) {
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         return employeeRepository.save(employee);
     }
 
@@ -84,7 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee updatePassword(String email, EmployeeDTO employeeDTO) {
         Employee existingEmployee = employeeRepository.findByEmail(email);
 
-        existingEmployee.setPassword(employeeDTO.getPassword());
+        existingEmployee.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
         existingEmployee.setUpdatedAt(LocalDateTime.now());
 
         return employeeRepository.save(existingEmployee);
@@ -100,8 +105,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public String login(String username, String pass) {
-        Employee e = employeeRepository.findByUsernameAndPassword(username, pass);
-        if (e != null) return e.getId() + "";
+        Employee e = employeeRepository.findByUsername(username);
+        if (e != null && passwordEncoder.matches(pass, e.getPassword())) return String.valueOf(e.getId());
         return "username hoặc pass không đúng!";
     }
 }

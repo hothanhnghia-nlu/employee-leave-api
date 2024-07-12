@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.hcmuaf.fit.backend.dto.EmployeeDTO;
 import vn.edu.hcmuaf.fit.backend.util.MailStructure;
 import vn.edu.hcmuaf.fit.backend.dto.LeaveApplicationsDTO;
 import vn.edu.hcmuaf.fit.backend.model.Employee;
@@ -41,6 +42,12 @@ public class LeaveAppsController {
         sendMail(boss.getEmail(), mailStructure);
 
         return new ResponseEntity<>(leaveAppsService.saveLeaveApps(employeeId, leaveApps), HttpStatus.CREATED);
+    }
+
+    // Get all Employee
+    @GetMapping
+    public List<LeaveApplicationsDTO> getAllLeaveApps() {
+        return leaveAppsService.getAllLeaveApp();
     }
 
     @GetMapping("{id}")

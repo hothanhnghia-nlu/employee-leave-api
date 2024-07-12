@@ -23,6 +23,13 @@ public class EmployeeDTO {
     public EmployeeDTO() {
     }
 
+    public EmployeeDTO(int userId, String email, String fullName, String position) {
+        this.userId = userId;
+        this.email = email;
+        this.fullName = fullName;
+        this.position = position;
+    }
+
     public String getFormattedId() {
         return String.format("%06d", this.userId);
     }
